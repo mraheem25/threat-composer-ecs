@@ -1,0 +1,60 @@
+name: Build and Push
+on: 
+  push: 
+    branches: [ main ]
+    paths:
+      - "app/**"
+      - "Dockerfile"
+      - ".github/workflows/build-push.yml"
+    workflow_dispatch:
+      inputs:
+        confirm:
+          description: "Type YES to run"
+          required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{secrets.AWS_REGION}}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }} 
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }} 
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Image
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.confirm == 'YES')
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build docker image (latest)
+        run: docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+
+      - name: Tag docker image (sha)
+        run: docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+
+      - name: Push docker image (latest)
+        run: |
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+          docker push "$IMAGE"
+          echo "Pushed: $IMAGE"
+
+      - name: Push docker image (sha)
+        run: |
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}"
+          docker push "$IMAGE"
+          echo "Pushed: $IMAGE"
