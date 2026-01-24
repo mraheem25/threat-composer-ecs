@@ -21,6 +21,7 @@ module "ecs" {
   target_group_arn  = module.alb.target_group_arn
   image_tag = var.image_tag
   ecr_repo_url = var.ecr_repo_url
+  container_port = var.container_port
 }
 
 module "alb" {

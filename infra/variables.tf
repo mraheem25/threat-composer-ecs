@@ -41,3 +41,8 @@ variable "pvtsubnet_b_cidr" {
     description = "The cidr for private subnet b"
     type = string
 }
+
+variable "container_port" {
+    description = "container port"
+    type = string
+}
