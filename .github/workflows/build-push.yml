@@ -41,8 +41,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build docker image (latest)
-        run: docker build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+      - name: Build and push to ECR
+        id: build-image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
 
       - name: Tag docker image (sha)
         run: docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
