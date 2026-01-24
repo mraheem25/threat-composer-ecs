@@ -78,7 +78,7 @@ resource "aws_lb_listener" "http" {
 
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.threatmod-alb.arn
-  port              = "443"
+  port              = 443
   protocol          = "HTTPS"
   ssl_policy        = var.ssl_policy
   certificate_arn   = var.cert_arn
