@@ -1,10 +1,10 @@
 domain_name = "mraheem.co.uk"
 alt_name = "*.mraheem.co.uk"
 ecr_repo_url = "668383290434.dkr.ecr.eu-west-2.amazonaws.com/threatmodel"
-image_tag = "sha256:e35970e6983407eb1c37b8c717f46a6a7a3c45ba0326b214389ec00f68cbd2e6"
+image_tag = "f4c96a28c0b2d8981664e03f461c2677152cd9a756012ffa8e2c6727427c2bda"
 vpc_cidr = "10.0.0.0/16"
 pubsubnet_a_cidr = "10.0.1.0/24"
 pubsubnet_b_cidr = "10.0.2.0/24"
 pvtsubnet_a_cidr = "10.0.3.0/24"
 pvtsubnet_b_cidr = "10.0.4.0/24"
-container_port = "80"
+container_port = 8080

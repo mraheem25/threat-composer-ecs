@@ -44,5 +44,5 @@ variable "pvtsubnet_b_cidr" {
 
 variable "container_port" {
     description = "container port"
-    type = string
+    type = number
 }
