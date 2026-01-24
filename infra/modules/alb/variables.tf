@@ -16,7 +16,7 @@ variable "vpc_id" {
 variable "health_check_path" {
     description = "path for the health check for the target group"
     type = string
-    default = "/health"
+    default = "/"
 }
 
 variable "health_matcher" {
