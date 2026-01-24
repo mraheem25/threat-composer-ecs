@@ -42,7 +42,7 @@ variable "ecs_task_execution_role_arn" {
 variable "container_port" {
     description = "Ports for the container and app"
     type = number
-    default = 8080
+    default = 80
 }
 
 variable "aws_region" {
