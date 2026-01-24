@@ -25,36 +25,36 @@ jobs:
         working-directory: ./infra    
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+    - name: Configure AWS credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ARN }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ secrets.TF_VERSION }}
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ secrets.TF_VERSION }}
 
-      - name: Terraform Init
-        run: terraform init
+    - name: Terraform Init
+      run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
+    - name: Terraform Validate
+      run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan
+    - name: Terraform Plan
+      run: terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
 
-      - name: Wait 60 seconds
-        run: sleep 60
+    - name: Wait 60 seconds
+      run: sleep 60
 
-      - name: Post-deploy health check
-        run: |
-          echo "Checking application health..."
-          curl -f https://tm.${DOMAIN_NAME}health
+    - name: Post-deploy health check
+      run: |
+        echo "Checking application health..."
+        curl -f https://tm.${DOMAIN_NAME}health
