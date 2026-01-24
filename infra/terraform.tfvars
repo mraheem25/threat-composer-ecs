@@ -1,7 +1,7 @@
 domain_name = "mraheem.co.uk"
 alt_name = "*.mraheem.co.uk"
 ecr_repo_url = "668383290434.dkr.ecr.eu-west-2.amazonaws.com/threatmodel"
-image_tag = "f4c96a28c0b2d8981664e03f461c2677152cd9a756012ffa8e2c6727427c2bda"
+image_tag = "e18c437d43a781067e3fef3c58762d04bc17c166"
 vpc_cidr = "10.0.0.0/16"
 pubsubnet_a_cidr = "10.0.1.0/24"
 pubsubnet_b_cidr = "10.0.2.0/24"
