@@ -58,4 +58,4 @@ jobs:
       - name: Post-deploy health check
         run: |
           echo "Checking application health..."
-          curl -f https://tm.mraheem.co.uk/health
+          curl -f https://tm.${DOMAIN_NAME}health
