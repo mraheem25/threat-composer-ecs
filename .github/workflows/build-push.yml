@@ -45,7 +45,7 @@ jobs:
         id: build-image
         uses: docker/build-push-action@v5
         with:
-          context: ./app
+          context: .
           platforms: linux/arm64
           
       - name: Tag docker image (sha)
