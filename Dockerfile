@@ -1,11 +1,11 @@
-FROM node:20-alpine@sha256:a96707b4b49f864433433544a3584f6f4d128779e6b856153a04366b8dd01bb0 AS builder
+FROM node:20-alpine@sha256:658d0f63e501824d6c23e06d4bb95c71e7d704537c9d9272f488ac03a370d448 AS builder
 WORKDIR /app
 COPY app/package.json app/yarn.lock ./
 RUN yarn install --frozen-lockfile 
 COPY app/ .
 RUN yarn build
 
-FROM node:20-alpine@sha256:a96707b4b49f864433433544a3584f6f4d128779e6b856153a04366b8dd01bb0
+FROM node:20-alpine@sha256:658d0f63e501824d6c23e06d4bb95c71e7d704537c9d9272f488ac03a370d448
 WORKDIR /app
 COPY --from=builder /app/build ./build
 RUN yarn global add serve
