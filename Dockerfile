@@ -1,7 +1,10 @@
 FROM node:20-alpine@sha256:658d0f63e501824d6c23e06d4bb95c71e7d704537c9d9272f488ac03a370d448 AS builder
 WORKDIR /app
 COPY app/package.json app/yarn.lock ./
-RUN yarn install --frozen-lockfile --network-timeout 600000
+RUN yarn install --frozen-lockfile \
+ --network-timeout 600000 \
+ --network-concurrency 1 \
+ || yarn install --frozen-lockfile --network-timeout 600000
 COPY app/ .
 RUN yarn build
 
