@@ -7,9 +7,8 @@ This project is a complete AWS deployment of a containerised web application. It
 ./
 ├── .github/
 │   └── workflows/
-│       ├── build-and-push.yaml
-│       ├── terraform-deploy.yaml
-│       
+│       ├── build-push.yaml
+│       └── deploy.yaml      
 │       
 ├── app/
 ├── infra/
