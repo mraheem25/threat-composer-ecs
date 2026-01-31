@@ -41,6 +41,37 @@ Key components:
 
 ## Overview
 
+The project was built incrementally, moving from local validation and moving to automated deployment.
+
+### Prerequisites
+- AWS account
+- Terraform
+- Docker
+- GitHub repository
+- Domain managed via Route 53 and/or Cloudflare
+
+## Application and Local Validation
+
+I first had to clone the existing Threat Composer application repository.
+
+- Local set up:
+```bash
+yarn install
+yarn build
+yarn global add serve
+serve -s build
+```
+
+Then in your browser run:
+```text
+http://localhost:3000
+```
+- Local Health Check:
+After the local setup you can run a health check:
+```bash
+curl -f http://localhost:3000/health.json
+```
+
 ## Terraform (Infrastructure)
 Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
 
@@ -76,38 +107,6 @@ Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
 
 #### ECR
 - Reads an existing ECR repository for the deployment
-
-## Procedure to reproduce
-
-The project was built incrementally, moving from local validation and moving to automated deployment.
-
-### Prerequisites
-- AWS account
-- Terraform
-- Docker
-- GitHub repository
-- Domain managed via Route 53 and/or Cloudflare
-
-### 1. Application and Local Validation
-- Cloned existing Threat Composer application repository.
-
-- Local set up:
-```bash
-yarn install
-yarn build
-yarn global add serve
-serve -s build
-```
-
-Then in your browser run:
-```text
-http://localhost:3000
-```
-- Local Health Check:
-After the local setup you can run a health check:
-```bash
-curl -f http://localhost:3000/health.json
-```
 
 ## CI/CD Workflows (GitHub Actions)
 
