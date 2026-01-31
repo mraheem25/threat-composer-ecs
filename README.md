@@ -109,100 +109,20 @@ After the local setup you can run a health check:
 curl -f http://localhost:3000/health.json
 ```
 
-### 2. Containerisation
-- Created a multi-stage Dockerfile inside the app.
+## CI/CD Workflows (GitHub Actions)
 
-- Built the image locally using:
-```bash
-docker built -t <image name> ./app
-```
+All workflows run from this repo using GitHub Actions and authenticate to AWS using GitHub OIDC. Terraform workflows run from the `infra/` directory and require manual confirmation.
 
-- Ran the container locally, mapping the container's port 80 to port 8080 on the host:
-``` bash
-docker run -p 8080:80 <image name>
-```
-- Verified container is running using curl:
-``` bash
-cult http://localhost:8080
-```
-- Image is ready to be pushed to ECR. 
+### Push to ECR workflow:
+- Trigger: push to `main` when `app/` or `Dockerfile` changes or manual run with confirmation.
+- Action: build Docker image and push to ECR.
+- Tags: latest and the github SHA.
 
-### 3. Image Registry | AWS ECR
-- Created an AWS ECR repository.
+![Build and Push to ECR](images/build-push-ecr.png)
 
-- Confirmed AWS credentials were configued:
-``` bash
-aws sts get-caller-identity
-```
-- Authenticated Docker to AWS ECR:
-``` bash
-aws ecr get-login-password --region <YOUR-REGION> \
-| docker login --username AWS --password-stdin \
-<YOUR AWS-ID>.dkr.ecr.<YOUR-REGION>.amazonaws.com
-```
+### Terraform Apply workflow:
+- Trigger: manual run with confirmation.
+- Action: `terraform apply -auto-approve`.
+- Verify: wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check on the deployed application.
 
-- Tagged image locally:
-``` bash
-docker tag <IMAGE-NAME:latest> \
-<YOU-AWS-ID>.dkr.ecr.<YOUR-REGION>.amazonaws.com/<IMAGE-NAME>
-```
-
-- Pushed the image to ECR Repository:
-``` bash
-docker push \
-<AWS-ID>.dkr.ecr.<YOUR-REGION>.amazonaws.com/<IMAGE-NAME>
-```
-
-### 4. ClickOps | Manual AWS Setup
-- The main parts of the infrastructure were first created manually using the AWS console in order to understand how the services fit together.
-
-- Created:
-  - ECS Cluster (fargate).
-  - Task definitions using the ECR Image.
-  - Application Load Balancer.
-  - Security Groups.
-  - DNS Records.
-  - ACM Certificate for HTTPS.
-
-Once the application was reachable via HTTPS, all manual resources were deleted.
-
-### 5. IaC | Terraform
-I created the the setup using modular Terraform.
-
-- Iniitialised Terraform in the directory:
-```bash
-terraform init
-```
-
-- Iteretively planned and applied infrastructure while building modules:
-``` bash
-terraform plan
-terraform apply
-```
-
-- Verified infrastructure using the ALB DNS with HTTPS endpoint:
-```bash
-curl <ALB DNS>
-curl https://<DOMAIN>
-curl https://<DOMAIN>/health
-```
-
-- Destroyed infrastructure at the end:
-``` bash
-terraform destroy
-```
-
-### 6. CI/CD Automation
-Implemented Github Actions for the pipelines.
-
-### Build and Push
-
-![architecture diagram](./images/build-cicd.png)
-
-### Deploy and Post Health
-![architecture diagram](./images/terraform-cicd.png)
-
-![architecture diagram](./images/healthcheck-cicd.png)
-
-
-
+![Terraform Deploy](images/terraform-deploy.png)
