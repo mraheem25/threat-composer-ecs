@@ -15,5 +15,5 @@ RUN addgroup -S appgroup \
 COPY --from=builder --chown=appuser:appgroup /app/build ./build
 RUN yarn global add serve
 USER appuser
-EXPOSE 80
+EXPOSE 8080
 CMD [ "serve", "-s", "build", "-l", "8080" ]
