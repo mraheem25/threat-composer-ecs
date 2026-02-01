@@ -1,6 +1,6 @@
 # ECS Threat Composer Deployment
 
-This project is a complete AWS deployment of a containerised web application. It focuses on building the infrastructure using Terraform, packaging the app with Docker and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS and accessible through a custom domain over HTTPS.
+This project is a deployment of a containerised web application (AWS Threat Composer). It focuses on comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS, which is accessible via a custom domain over HTTPS.
 
 ## Project Structure
 ```text
@@ -30,18 +30,18 @@ This project is a complete AWS deployment of a containerised web application. It
 ![architecture diagram](./images/ecs-architecture-diagram.png)
 
 Key components:
--	VPC with public and private subnets across multiple AZs
--	Application Load Balancer (ALB) in public subnets
+-	VPC with public and private subnets across 2 availability zones (AZs)
+-	NAT Gateway in 2 AZ's providing outbound internet access from private subnets
+-	Application Load Balancer (ALB) in public subnets to distribute imcoming traffic
 -	ECS Fargate service running tasks in private subnets
--	NAT Gateway for outbound internet access from private subnets
 -	ACM certificate for HTTPS
 -	Route 53 + Cloudflare for DNS
--	S3 remote Terraform state backend
+-	Terraform state backend (S3 for state storage)
 -	GitHub Actions for CI/CD using OIDC
 
 ## Overview
 
-The project was built incrementally, moving from local validation and moving to automated deployment.
+The project followed a staged procedure, moving from local validation to automated deployment.
 
 ### Prerequisites
 - AWS account
@@ -77,14 +77,14 @@ Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
 
 #### Request flow
 1. User enters `tm.mraheem.co.uk` into the browser.
-2. Route 53 looks up the domain and returns the ALB DNS name.
+2. Route 53 resolves the domain and returns the ALB DNS name.
 3. If the request is HTTP, the ALB redirects it to HTTPS.
-4. For HTTPS, the ALB performs the TLS handshake using the ACM cert then forwards the request to the target group which has the task IPs.
-5. An ECS service manages tasks running in private subnets. The container receives traffic on port 8080 and logs are sent to CloudWatch.
+4. For HTTPS, the ALB performs the TLS handshake using the ACM certificate then forwards the request to the target group, which has the task IPs.
+5. ECS manages tasks running in private subnets. Container receives traffic on port 8080 and logs are sent to CloudWatch.
 
 #### Networking
-- Creates a VPC with public and private subnets across 2 Availability Zones.
-- Public subnets route to an Internet Gateway and private subnets use NAT Gateways for outbound access.
+- Creates a VPC with 2 Availability Zones (AZ). Each AZ has its own public and private subnet
+- NATGW's are situated in public subnets providing the private subents with outbound access. Public subnets route to an Internet Gateway.
 
 #### Load Balancing and DNS
 - Creates an internet facing ALB with:
@@ -119,9 +119,16 @@ All workflows run from this repo using GitHub Actions and authenticate to AWS us
 
 ![Build and Push to ECR](images/build-push-ecr.png)
 
-### Terraform Apply workflow:
+### Terraform Deploy workflow:
 - Trigger: manual run with confirmation.
 - Action: `terraform apply -auto-approve`.
-- Verify: wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check on the deployed application.
+- Verify: wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check.
 
 ![Terraform Deploy](images/terraform-deploy.png)
+
+--- 
+
+## Challenges and Lessons Learned
+Throughout this project, I faced several challenges, which helped me furthen my understanding. Some of the challenges icnluded:
+- Application not being accessible to the internet and the tarffic not reaching the ALB.
+- As a Mac user, I had issues running my image. I implemented ARM 64 in my clickops task definitions as well as terraform Iac. However, when it came to building pipelines, this resulted in very high build times.
