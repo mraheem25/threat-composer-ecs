@@ -25,13 +25,11 @@ variable "task_definition_memory" {
 
 variable "ecr_repo_url" {
   type = string
-  #default = "668383290434.dkr.ecr.eu-west-2.amazonaws.com/threatmodel"
 }
 
 
 variable "image_tag" {
   type = string
-  #default = "sha256:e35970e6983407eb1c37b8c717f46a6a7a3c45ba0326b214389ec00f68cbd2e6"
 }
 
 
