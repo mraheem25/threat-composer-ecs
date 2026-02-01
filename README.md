@@ -128,6 +128,12 @@ All workflows run from this repo using GitHub Actions and authenticate to AWS us
 
 --- 
 
+## Live Domain Page
+
+![Domain Page](images/live-domain.png)
+
+---
+
 ## Challenges and Lessons Learned
 Throughout this project, I faced several challenges, which helped me furthen my understanding. Some of the challenges icnluded:
 - Application not being accessible to the internet and the tarffic not reaching the ALB.
