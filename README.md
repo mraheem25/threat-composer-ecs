@@ -1,5 +1,11 @@
 # ECS Threat Composer Deployment
 
+<!-- Project badges -->
+![Docker](https://img.shields.io/badge/Container-Docker-blue)
+![AWS ECS](https://img.shields.io/badge/AWS-ECS-orange)
+![Terraform](https://img.shields.io/badge/IaC-Terraform-purple)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)
+
 This project is a deployment of a containerised web application (AWS Threat Composer). It focuses on comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS, which is accessible via a custom domain over HTTPS.
 
 ## Project Structure
