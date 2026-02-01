@@ -92,7 +92,7 @@ Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
   - HTTPS listener that forwards to the target group
 - Creates a Route 53 alias A record pointing the subdomain to the ALB.
 
-#### TLS (HTTPS)
+#### SSL/TLS (HTTPS)
 - Requests an ACM certificate using DNS validation.
 - Creates the validation records in Route 53 and completes certificate validation.
 
@@ -134,7 +134,8 @@ All workflows run from this repo using GitHub Actions and authenticate to AWS us
 
 ---
 
-## Challenges and Lessons Learned
-Throughout this project, I faced several challenges, which helped me furthen my understanding. Some of the challenges icnluded:
-- Application not being accessible to the internet and the tarffic not reaching the ALB.
+## Challenges and lessons learnt
+Throughout this project, I faced several challenges, which helped me furthen my understanding. I also recognised the importance of commiting often and early to make safe, iterative changes and ease debugging. Some of the challenges included:
+- Application not being accessible to the internet and the traffic not reaching the ALB.
 - As a Mac user, I had issues running my image. I implemented ARM 64 in my clickops task definitions as well as terraform Iac. However, when it came to building pipelines, this resulted in very high build times.
+
