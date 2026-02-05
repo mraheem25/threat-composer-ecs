@@ -6,7 +6,7 @@
 ![Terraform](https://img.shields.io/badge/IaC-Terraform-purple)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)
 
-This project is a deployment of a containerised web application (AWS Threat Composer). It focuses on comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS, which is accessible via a custom domain over HTTPS.
+This project is a deployment of a containerised web application (AWS Threat Composer). It involves comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS, which is accessible via a custom domain over HTTPS.
 
 ## Project Structure
 ```text
@@ -60,7 +60,7 @@ The project followed a staged procedure, moving from local validation to automat
 
 I first had to clone the existing Threat Composer application repository.
 
-- Local set up:
+Local set up:
 ```bash
 yarn install
 yarn build
@@ -72,14 +72,14 @@ Then in your browser run:
 ```text
 http://localhost:3000
 ```
-- Local Health Check:
+Local Health Check:
 After the local setup you can run a health check:
 ```bash
 curl -f http://localhost:3000/health.json
 ```
 
 ## Terraform (Infrastructure)
-Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
+Terraform provisions the AWS infrastructure using a modular setup.
 
 #### Request flow
 1. User enters `tm.mraheem.co.uk` into the browser.
@@ -90,17 +90,17 @@ Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
 
 #### Networking
 - Creates a VPC with 2 Availability Zones (AZ). Each AZ has its own public and private subnet
-- NATGW's are situated in public subnets providing the private subents with outbound access. Public subnets route to an Internet Gateway.
+- NATGW's are situated in public subnets providing the private subnets with outbound access. Public subnets route to an Internet Gateway.
 
-#### Load Balancing and DNS
+#### Load Balancer
 - Creates an internet facing ALB with:
   - HTTP listener that redirects to HTTPS
-  - HTTPS listener that forwards to the target group
+  - HTTPS listener that forwards to our target group
 - Creates a Route 53 alias A record pointing the subdomain to the ALB.
 
-#### SSL/TLS (HTTPS)
+#### SSL/TLS Cert (HTTPS)
 - Requests an ACM certificate using DNS validation.
-- Creates the validation records in Route 53 and completes certificate validation.
+- Creates the CNAME validation records in our Route 53 hosted zone and completes certificate validation.
 
 #### ECS
 - Creates an ECS cluster.
@@ -116,11 +116,11 @@ Terraform provisions the AWS infrastructure in `infra/` using a modular setup.
 
 ## CI/CD Workflows (GitHub Actions)
 
-All workflows run from this repo using GitHub Actions and authenticate to AWS using GitHub OIDC. Terraform workflows run from the `infra/` directory and require manual confirmation.
+All workflows run from this repo using GitHub Actions and authenticate to AWS using GitHub OIDC. 
 
 ### Push to ECR workflow:
 - Trigger: push to `main` when `app/` or `Dockerfile` changes or manual run with confirmation.
-- Action: build Docker image and push to ECR.
+- Action: Build Docker image and push to ECR.
 - Tags: latest and the github SHA.
 
 ![Build and Push to ECR](images/build-push-ecr.png)
