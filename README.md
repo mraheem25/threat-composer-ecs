@@ -6,15 +6,15 @@
 ![Terraform](https://img.shields.io/badge/IaC-Terraform-purple)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)
 
-This project is a deployment of a containerised web application (AWS Threat Composer). It involves comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The result is a live, production style setup deployed to AWS, which is accessible via a custom domain over HTTPS.
+This project is a deployment of a containerised web application (AWS Threat Composer). It involves comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The website has been secured and is accessible via a custom domain over HTTPS. The result is an end to end, production style setup that is deployable to AWS.
 
-## Project Structure
+## Repository Structure
 ```text
-./
+ECS PROJECT
 ├── .github/
 │   └── workflows/
-│       ├── build-push.yaml
-│       └── deploy.yaml      
+│       ├── build-push.yml
+│       └── deploy.yml      
 │       
 ├── app/
 ├── infra/
@@ -51,10 +51,10 @@ The project followed a staged procedure, moving from local validation to automat
 
 ### Prerequisites
 - AWS account
-- Terraform
-- Docker
-- GitHub repository
 - Domain managed via Route 53 and/or Cloudflare
+- Docker
+- Terraform
+- GitHub repository
 
 ## Application and Local Validation
 
@@ -68,12 +68,11 @@ yarn global add serve
 serve -s build
 ```
 
-Then in your browser run:
+Enter into your browser:
 ```text
 http://localhost:3000
 ```
 Local Health Check:
-After the local setup you can run a health check:
 ```bash
 curl -f http://localhost:3000/health.json
 ```
@@ -82,17 +81,17 @@ curl -f http://localhost:3000/health.json
 Terraform provisions the AWS infrastructure using a modular setup.
 
 #### Request flow
-1. User enters `tm.mraheem.co.uk` into the browser.
+1. User types `tm.mraheem.co.uk` into the browser.
 2. Route 53 resolves the domain and returns the ALB DNS name.
-3. If the request is HTTP, the ALB redirects it to HTTPS.
-4. For HTTPS, the ALB performs the TLS handshake using the ACM certificate then forwards the request to the target group, which has the task IPs.
+3. For HTTP requests, ALB redirects them to HTTPS.
+4. For HTTPS, the ALB performs a TLS handshake using the ACM certificate. The request is then forwarded to the target group, which has the task IPs.
 5. ECS manages tasks running in private subnets. Container receives traffic on port 8080 and logs are sent to CloudWatch.
 
 #### Networking
 - Creates a VPC with 2 Availability Zones (AZ). Each AZ has its own public and private subnet
 - NATGW's are situated in public subnets providing the private subnets with outbound access. Public subnets route to an Internet Gateway.
 
-#### Load Balancer
+#### Application Load Balancer
 - Creates an internet facing ALB with:
   - HTTP listener that redirects to HTTPS
   - HTTPS listener that forwards to our target group
