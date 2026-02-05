@@ -31,7 +31,7 @@ ECS PROJECT
 └── Dockerfile
 ```
 
-## Architecture
+## Architecture Diagram
 
 ![architecture diagram](./images/ecs-architecture-diagram.png)
 
