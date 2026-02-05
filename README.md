@@ -1,4 +1,4 @@
-# ECS Threat Composer Deployment
+# ECS Threat Composer Project
 
 <!-- Project badges -->
 ![Docker](https://img.shields.io/badge/Container-Docker-blue)
@@ -6,7 +6,7 @@
 ![Terraform](https://img.shields.io/badge/IaC-Terraform-purple)
 ![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-blue)
 
-This project is a deployment of a containerised web application (AWS Threat Composer). It involves comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The website has been secured and is accessible via a custom domain over HTTPS. The result is an end to end, production style setup that is deployable to AWS.
+This project is an end to end, production ready deployment of AWS Threat Composer. It involves comtainerising the app using Docker; building the infrastructure in Terraform and automating deployments using GitHub Actions. The website is secured with SSL/TLS certificate via ACM and served through a custom domain.
 
 ## Repository Structure
 ```text
@@ -30,7 +30,8 @@ ECS PROJECT
 │       ├── iam/
 │       └── vpc/
 ├── .gitignore
-└── Dockerfile
+├── Dockerfile
+└── README.md
 ```
 
 ## Architecture Diagram
@@ -83,10 +84,8 @@ curl -f http://localhost:3000/health.json
 Terraform provisions the AWS infrastructure using a modular setup.
 
 #### Request flow
-1. User types `tm.mraheem.co.uk` into the browser.
-2. Route 53 resolves the domain and returns the ALB DNS name.
-3. For HTTP requests, ALB redirects them to HTTPS.
-4. For HTTPS, the ALB performs a TLS handshake using the ACM certificate. The request is then forwarded to the target group, which has the task IPs.
+1. User enters custom domain `tm.mraheem.co.uk` into the browser, ehich Route 53 resolves - returning the ALB DNS name.
+2. ALB enforces HTTPS by redirecting HTTP requests and securing the site via an ACM certificate.
 5. ECS manages tasks running in private subnets. Container receives traffic on port 8080 and logs are sent to CloudWatch.
 
 #### Networking
@@ -94,14 +93,15 @@ Terraform provisions the AWS infrastructure using a modular setup.
 - NATGW's are situated in public subnets providing the private subnets with outbound access. Public subnets route to an Internet Gateway.
 
 #### Application Load Balancer
-- Creates an internet facing ALB with:
-  - HTTP listener that redirects to HTTPS
-  - HTTPS listener that forwards to our target group
-- Creates a Route 53 alias A record pointing the subdomain to the ALB.
+- Creates an internet facing ALB
+- HTTP listener that redirects to HTTPS
+- HTTPS listener that forwards to our target group
+
 
 #### SSL/TLS Cert (HTTPS)
 - Requests an ACM certificate using DNS validation.
-- Creates the CNAME validation records in our Route 53 hosted zone and completes certificate validation.
+- Creates the CNAME validation records in our Route 53 hosted zone
+- AWS carries out certificate validation
 
 #### ECS
 - Creates an ECS cluster.
@@ -120,16 +120,16 @@ Terraform provisions the AWS infrastructure using a modular setup.
 All workflows run from this repo using GitHub Actions and authenticate to AWS using GitHub OIDC. 
 
 ### Push to ECR workflow:
-- Trigger: push to `main` when `app/` or `Dockerfile` changes or manual run with confirmation.
-- Action: Build Docker image and push to ECR.
-- Tags: latest and the github SHA.
+- Trigger ==> push to `main` when `app/` or `Dockerfile` changes or manual run with confirmation.
+- Action ==> Build Docker image and push to ECR.
+- Tags ==> latest and the github SHA.
 
 ![Build and Push to ECR](images/build-push-ecr.png)
 
 ### Terraform Deploy workflow:
-- Trigger: manual run with confirmation.
-- Action: `terraform apply -auto-approve`.
-- Verify: wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check.
+- Trigger ==> manual run with confirmation.
+- Action ==> `terraform apply -auto-approve`.
+- Verify ==> wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check.
 
 ![Terraform Deploy](images/terraform-deploy.png)
 
