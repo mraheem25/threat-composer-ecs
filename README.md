@@ -20,6 +20,7 @@ ECS PROJECT
 ├── infra/
 │   ├── main.tf
 │   ├── provider.tf
+│   ├── terraform.tfvars
 │   ├── variables.tf
 │   └── modules/
 │       ├── acm/
@@ -28,6 +29,7 @@ ECS PROJECT
 │       ├── ecs/
 │       ├── iam/
 │       └── vpc/
+├── .gitignore
 └── Dockerfile
 ```
 
@@ -45,7 +47,7 @@ Key components:
 -	Terraform state backend (S3 for state storage)
 -	GitHub Actions for CI/CD using OIDC
 
-## Overview
+## Project Overview
 
 The project followed a staged procedure, moving from local validation to automated deployment.
 
