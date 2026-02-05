@@ -141,7 +141,7 @@ All workflows run from this repo using GitHub Actions and authenticate to AWS us
 
 ---
 
-## Challenges and lessons learnt
+## Reflection
 Throughout this project, I faced several challenges, which helped me furthen my understanding. I also recognised the importance of commiting often and early to make safe, iterative changes and ease debugging. Some of the challenges included:
 - Application not being accessible to the internet and the traffic not reaching the ALB.
 - As a Mac user, I was implementing ARM 64 when I built the infrastructure via terraform. This resulted in very long build times when it came to building my pipelines.
