@@ -119,14 +119,14 @@ Terraform provisions the AWS infrastructure using a modular setup.
 
 All workflows run from this repo using GitHub Actions and authenticate to AWS using GitHub OIDC. 
 
-### Push to ECR workflow:
+### Build and Push to ECR Workflow:
 - Trigger ==> push to `main` when `app/` or `Dockerfile` changes or manual run with confirmation.
 - Action ==> Build Docker image and push to ECR.
 - Tags ==> latest and the github SHA.
 
 ![Build and Push to ECR](images/build-push-ecr.png)
 
-### Terraform Deploy workflow:
+### Terraform Deploy Workflow:
 - Trigger ==> manual run with confirmation.
 - Action ==> `terraform apply -auto-approve`.
 - Verify ==> wait 60s then `curl -f https://tm.mrahaeem.co.uk/health.json` to run a health check.
